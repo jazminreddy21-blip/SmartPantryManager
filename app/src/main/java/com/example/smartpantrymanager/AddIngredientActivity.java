@@ -39,10 +39,10 @@ public class AddIngredientActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         unitSpinner.setAdapter(adapter);
-
         Button saveButton = findViewById(R.id.btnSaveIngredient);
         EditText ingredientName = findViewById(R.id.etIngredientName);
         EditText quantity = findViewById(R.id.etQuantity);
+        EditText expiryDate = findViewById(R.id.etExpiryDate);
 
         saveButton.setOnClickListener(v->{
             String name = ingredientName.getText().toString().trim();
@@ -56,7 +56,26 @@ public class AddIngredientActivity extends AppCompatActivity {
                 quantity.setError("Please Enter the Quantity");
                 return;
             }
-            Toast.makeText(this,"Ingredients are valid", Toast.LENGTH_SHORT).show();
+            String unit = unitSpinner.getSelectedItem().toString();
+            String expiry = expiryDate.getText().toString().trim();
+
+            double quantityValue = Double.parseDouble(quantityText);
+
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+            boolean success = dbHelper.addIngredient(
+                    name,
+                    quantityValue,
+                    unit,
+                    expiry
+            );
+
+            if (success) {
+                Toast.makeText(this, "Ingredient saved!", Toast.LENGTH_LONG).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Failed to save ingredient", Toast.LENGTH_SHORT).show();
+            }
 
 
         });
