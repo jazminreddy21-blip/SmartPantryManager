@@ -96,8 +96,14 @@ public class MainActivity extends AppCompatActivity {
 
         cursor.close();
 
-        adapter = new PantryAdapter(pantryItems);
+        adapter = new PantryAdapter(pantryItems, () -> {
 
+            if (pantryItems.isEmpty()) {
+                emptyMessage.setVisibility(View.VISIBLE);
+            } else {
+                emptyMessage.setVisibility(View.GONE);
+            }
+        });
         recyclerView.setAdapter(adapter);
         if (pantryItems.isEmpty()) {
             emptyMessage.setVisibility(View.VISIBLE);
