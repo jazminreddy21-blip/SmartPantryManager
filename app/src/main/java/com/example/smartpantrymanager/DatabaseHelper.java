@@ -65,5 +65,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null
         );
     }
+
+    public boolean updateIngredient(
+            int id,
+            String name,
+            double quantity,
+            String unit,
+            String expiryDate
+    ) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_NAME, name);
+        values.put(COLUMN_QUANTITY, quantity);
+        values.put(COLUMN_UNIT, unit);
+        values.put(COLUMN_EXPIRY_DATE, expiryDate);
+
+        int result = db.update(
+                TABLE_PANTRY,
+                values,
+                COLUMN_ID + " = ?",
+                new String[]{String.valueOf(id)}
+        );
+
+        return result > 0;
+    }
+
+    public Cursor getIngredientById(int id) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        return db.rawQuery(
+                "SELECT * FROM " + TABLE_PANTRY + " WHERE " + COLUMN_ID + " = ?",
+                new String[]{String.valueOf(id)}
+        );
+    }
 }
 

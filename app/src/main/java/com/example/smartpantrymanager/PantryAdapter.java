@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Button;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,6 +48,18 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
                     "Expires: " + item.getExpiryDate()
             );
         }
+
+        holder.editButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    v.getContext(),
+                    EditIngredientActivity.class
+            );
+
+            intent.putExtra("ingredient_id", item.getId());
+
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override
@@ -58,13 +72,14 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         TextView ingredientName;
         TextView ingredientQuantity;
         TextView ingredientExpiry;
-
+        Button editButton;
         public PantryViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ingredientName = itemView.findViewById(R.id.tvIngredientName);
             ingredientQuantity = itemView.findViewById(R.id.tvIngredientQuantity);
             ingredientExpiry = itemView.findViewById(R.id.tvIngredientExpiry);
+            editButton = itemView.findViewById(R.id.btnEditIngredient);
         }
     }
 }
