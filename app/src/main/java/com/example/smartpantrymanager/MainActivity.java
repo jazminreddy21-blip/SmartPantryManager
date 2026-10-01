@@ -29,10 +29,26 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+        RecipeSeeder.seedRecipes(dbHelper);
+
         Button addButton = findViewById(R.id.btnAddIngredient);
 
         addButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddIngredientActivity.class);
+            startActivity(intent);
+        });
+
+        Button viewRecipesButton = findViewById(R.id.btnViewRecipes);
+
+        viewRecipesButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    RecipesActivity.class
+            );
+
             startActivity(intent);
         });
 

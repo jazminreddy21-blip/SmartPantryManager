@@ -8,14 +8,26 @@ import android.database.Cursor;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "SmartPantry.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TABLE_PANTRY = "pantry_items";
+
+    private static final String TABLE_RECIPES = "recipes";
+    private static final String TABLE_RECIPE_INGREDIENTS = "recipe_ingredients";
 
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_QUANTITY = "quantity";
     private static final String COLUMN_UNIT = "unit";
     private static final String COLUMN_EXPIRY_DATE = "expiry_date";
+
+    private static final String COLUMN_RECIPE_NAME = "recipe_name";
+    private static final String COLUMN_INSTRUCTIONS = "instructions";
+    private static final String COLUMN_PREP_TIME = "prep_time";
+
+    private static final String COLUMN_RECIPE_ID = "recipe_id";
+    private static final String COLUMN_INGREDIENT_NAME = "ingredient_name";
+    private static final String COLUMN_INGREDIENT_QUANTITY = "ingredient_quantity";
+    private static final String COLUMN_INGREDIENT_UNIT = "ingredient_unit";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,11 +45,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createTable);
 
+        String createRecipesTable = "CREATE TABLE " + TABLE_RECIPES + " (" +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_RECIPE_NAME + " TEXT NOT NULL, " +
+                COLUMN_INSTRUCTIONS + " TEXT NOT NULL, " +
+                COLUMN_PREP_TIME + " TEXT NOT NULL" +
+                ")";
+
+        db.execSQL(createRecipesTable);
+
+        String createRecipeIngredientsTable =
+                "CREATE TABLE " + TABLE_RECIPE_INGREDIENTS + " (" +
+                        COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_RECIPE_ID + " INTEGER NOT NULL, " +
+                        COLUMN_INGREDIENT_NAME + " TEXT NOT NULL, " +
+                        COLUMN_INGREDIENT_QUANTITY + " REAL NOT NULL, " +
+                        COLUMN_INGREDIENT_UNIT + " TEXT NOT NULL" +
+                        ")";
+
+        db.execSQL(createRecipeIngredientsTable);
+
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        if (oldVersion < 2) {
+
+            String createRecipesTable = "CREATE TABLE " + TABLE_RECIPES + " (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_RECIPE_NAME + " TEXT NOT NULL, " +
+                    COLUMN_INSTRUCTIONS + " TEXT NOT NULL, " +
+                    COLUMN_PREP_TIME + " TEXT NOT NULL" +
+                    ")";
+
+            db.execSQL(createRecipesTable);
+
+            String createRecipeIngredientsTable =
+                    "CREATE TABLE " + TABLE_RECIPE_INGREDIENTS + " (" +
+                            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            COLUMN_RECIPE_ID + " INTEGER NOT NULL, " +
+                            COLUMN_INGREDIENT_NAME + " TEXT NOT NULL, " +
+                            COLUMN_INGREDIENT_QUANTITY + " REAL NOT NULL, " +
+                            COLUMN_INGREDIENT_UNIT + " TEXT NOT NULL" +
+                            ")";
+
+            db.execSQL(createRecipeIngredientsTable);
+        }
     }
 
     public boolean addIngredient(String name, double quantity, String unit, String expiryDate) {
@@ -115,5 +170,75 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return result > 0;
     }
+
+    // Add a recipe
+    public long addRecipe(String recipeName, String instructions, String prepTime) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_RECIPE_NAME, recipeName);
+        values.put(COLUMN_INSTRUCTIONS, instructions);
+        values.put(COLUMN_PREP_TIME, prepTime);
+
+        return db.insert(TABLE_RECIPES, null, values);
+    }
+
+
+    // Add an ingredient to a recipe
+    public long addRecipeIngredient(
+            long recipeId,
+            String ingredientName,
+            double quantity,
+            String unit
+    ) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_RECIPE_ID, recipeId);
+        values.put(COLUMN_INGREDIENT_NAME, ingredientName);
+        values.put(COLUMN_INGREDIENT_QUANTITY, quantity);
+        values.put(COLUMN_INGREDIENT_UNIT, unit);
+
+        return db.insert(TABLE_RECIPE_INGREDIENTS, null, values);
+    }
+
+
+    // Get all recipes
+    public Cursor getAllRecipes() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        return db.query(
+                TABLE_RECIPES,
+                null,
+                null,
+                null,
+                null,
+                null,
+                COLUMN_RECIPE_NAME + " ASC"
+        );
+    }
+
+
+    // Get ingredients for a specific recipe
+    public Cursor getRecipeIngredients(int recipeId) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        return db.query(
+                TABLE_RECIPE_INGREDIENTS,
+                null,
+                COLUMN_RECIPE_ID + " = ?",
+                new String[]{String.valueOf(recipeId)},
+                null,
+                null,
+                null
+        );
+    }
+
 }
 
