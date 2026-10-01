@@ -72,6 +72,22 @@ public class MainActivity extends AppCompatActivity {
                     SuggestedRecipesActivity.class
             );
 
+
+
+            startActivity(intent);
+        });
+
+        // Settings button
+        Button settingsButton =
+                findViewById(R.id.btnSettings);
+
+        settingsButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    SettingsActivity.class
+            );
+
             startActivity(intent);
         });
 
