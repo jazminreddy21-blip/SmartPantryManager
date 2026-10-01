@@ -16,6 +16,7 @@ public class AddIngredientActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_add_ingredient);
+
         Spinner unitSpinner = findViewById(R.id.spUnit);
 
         String[] units = {
@@ -41,27 +42,53 @@ public class AddIngredientActivity extends AppCompatActivity {
         );
 
         unitSpinner.setAdapter(unitAdapter);
+
         Button saveButton = findViewById(R.id.btnSaveIngredient);
         EditText ingredientName = findViewById(R.id.etIngredientName);
         EditText quantity = findViewById(R.id.etQuantity);
         EditText expiryDate = findViewById(R.id.etExpiryDate);
 
-        saveButton.setOnClickListener(v->{
+        saveButton.setOnClickListener(v -> {
+
             String name = ingredientName.getText().toString().trim();
             String quantityText = quantity.getText().toString().trim();
 
-            if(name.isEmpty()) {
-                ingredientName.setError("Please enter an ingredient ");
+            if (name.isEmpty()) {
+                ingredientName.setError("Please enter an ingredient");
                 return;
             }
-            if(quantityText.isEmpty()){
-                quantity.setError("Please Enter the Quantity");
-                return;
-            }
-            String unit = unitSpinner.getSelectedItem().toString();
-            String expiry = expiryDate.getText().toString().trim();
 
-            double quantityValue = Double.parseDouble(quantityText);
+            if (quantityText.isEmpty()) {
+                quantity.setError("Please enter the quantity");
+                return;
+            }
+
+            double quantityValue;
+
+            try {
+                quantityValue = Double.parseDouble(quantityText);
+            } catch (NumberFormatException e) {
+                quantity.setError("Please enter a valid number");
+                return;
+            }
+
+            if (quantityValue <= 0) {
+                quantity.setError("Quantity must be greater than 0");
+                return;
+            }
+
+            String unit = unitSpinner.getSelectedItem().toString();
+
+            if (unit.equals("Unit")) {
+                Toast.makeText(
+                        this,
+                        "Please select a unit",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            String expiry = expiryDate.getText().toString().trim();
 
             DatabaseHelper dbHelper = new DatabaseHelper(this);
 
@@ -73,15 +100,23 @@ public class AddIngredientActivity extends AppCompatActivity {
             );
 
             if (success) {
-                Toast.makeText(this, "Ingredient saved!", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(
+                        this,
+                        "Ingredient saved!",
+                        Toast.LENGTH_LONG
+                ).show();
+
                 finish();
+
             } else {
-                Toast.makeText(this, "Failed to save ingredient", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(
+                        this,
+                        "Failed to save ingredient",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
-
-
         });
-
     }
-
 }
