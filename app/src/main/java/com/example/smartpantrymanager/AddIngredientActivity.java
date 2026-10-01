@@ -30,15 +30,17 @@ public class AddIngredientActivity extends AppCompatActivity {
                 "teaspoons"
         };
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 units
         );
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        unitAdapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
 
-        unitSpinner.setAdapter(adapter);
+        unitSpinner.setAdapter(unitAdapter);
         Button saveButton = findViewById(R.id.btnSaveIngredient);
         EditText ingredientName = findViewById(R.id.etIngredientName);
         EditText quantity = findViewById(R.id.etQuantity);

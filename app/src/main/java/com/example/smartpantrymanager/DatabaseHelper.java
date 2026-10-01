@@ -239,6 +239,103 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null
         );
     }
+    public boolean canMakeRecipe(int recipeId) {
 
+        Cursor recipeIngredients = getRecipeIngredients(recipeId);
+
+        while (recipeIngredients.moveToNext()) {
+
+            String requiredName =
+                    recipeIngredients.getString(
+                            recipeIngredients.getColumnIndexOrThrow(
+                                    "ingredient_name"
+                            )
+                    );
+
+            double requiredQuantity =
+                    recipeIngredients.getDouble(
+                            recipeIngredients.getColumnIndexOrThrow(
+                                    "ingredient_quantity"
+                            )
+                    );
+
+            String requiredUnit =
+                    recipeIngredients.getString(
+                            recipeIngredients.getColumnIndexOrThrow(
+                                    "ingredient_unit"
+                            )
+                    );
+
+            boolean ingredientFound = false;
+
+            Cursor pantryCursor = getAllIngredients();
+
+            while (pantryCursor.moveToNext()) {
+
+                String pantryName =
+                        pantryCursor.getString(
+                                pantryCursor.getColumnIndexOrThrow("name")
+                        );
+
+                double pantryQuantity =
+                        pantryCursor.getDouble(
+                                pantryCursor.getColumnIndexOrThrow("quantity")
+                        );
+
+                String pantryUnit =
+                        pantryCursor.getString(
+                                pantryCursor.getColumnIndexOrThrow("unit")
+                        );
+
+                if (ingredientNamesMatch(requiredName, pantryName)
+                        && requiredUnit.equalsIgnoreCase(pantryUnit)) {
+
+                    if (pantryQuantity >= requiredQuantity) {
+                        ingredientFound = true;
+                    }
+
+                    break;
+                }
+            }
+
+            pantryCursor.close();
+
+            if (!ingredientFound) {
+
+                recipeIngredients.close();
+
+                return false;
+            }
+        }
+
+        recipeIngredients.close();
+
+        return true;
+    }
+
+    private boolean ingredientNamesMatch(
+            String recipeName,
+            String pantryName
+    ) {
+
+        String recipe = recipeName.toLowerCase().trim();
+        String pantry = pantryName.toLowerCase().trim();
+
+        if (recipe.equals(pantry)) {
+            return true;
+        }
+
+        if (recipe.endsWith("s")
+                && recipe.substring(0, recipe.length() - 1).equals(pantry)) {
+            return true;
+        }
+
+        if (pantry.endsWith("s")
+                && pantry.substring(0, pantry.length() - 1).equals(recipe)) {
+            return true;
+        }
+
+        return false;
+    }
 }
 

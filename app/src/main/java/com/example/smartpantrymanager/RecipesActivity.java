@@ -2,6 +2,7 @@ package com.example.smartpantrymanager;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,11 @@ public class RecipesActivity extends AppCompatActivity {
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_recipes);
+        Button backButton = findViewById(R.id.btnBackToPantry);
+
+        backButton.setOnClickListener(v -> {
+            finish();
+        });
 
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(R.id.main),

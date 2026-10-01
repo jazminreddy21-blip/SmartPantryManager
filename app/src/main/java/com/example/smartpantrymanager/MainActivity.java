@@ -29,18 +29,27 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        dbHelper = new DatabaseHelper(this);
 
-        RecipeSeeder.seedRecipes(dbHelper);
+// Recipe seeding temporarily disabled while testing startup
+// RecipeSeeder.seedRecipes(dbHelper);
 
+        // Add Ingredient button
         Button addButton = findViewById(R.id.btnAddIngredient);
 
         addButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddIngredientActivity.class);
+
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    AddIngredientActivity.class
+            );
+
             startActivity(intent);
         });
 
-        Button viewRecipesButton = findViewById(R.id.btnViewRecipes);
+        // View Recipes button
+        Button viewRecipesButton =
+                findViewById(R.id.btnViewRecipes);
 
         viewRecipesButton.setOnClickListener(v -> {
 
@@ -52,14 +61,28 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Suggested Recipes button
+        Button suggestedRecipesButton =
+                findViewById(R.id.btnSuggestedRecipes);
+
+        suggestedRecipesButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    SuggestedRecipesActivity.class
+            );
+
+            startActivity(intent);
+        });
+
+        // Pantry RecyclerView
         recyclerView = findViewById(R.id.recyclerPantry);
+
         emptyMessage = findViewById(R.id.tvEmptyPantry);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        dbHelper = new DatabaseHelper(this);
-
-
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
     }
 
     @Override
@@ -112,19 +135,38 @@ public class MainActivity extends AppCompatActivity {
 
         cursor.close();
 
-        adapter = new PantryAdapter(pantryItems, () -> {
+        adapter = new PantryAdapter(
+                pantryItems,
+                () -> {
 
-            if (pantryItems.isEmpty()) {
-                emptyMessage.setVisibility(View.VISIBLE);
-            } else {
-                emptyMessage.setVisibility(View.GONE);
-            }
-        });
+                    if (pantryItems.isEmpty()) {
+
+                        emptyMessage.setVisibility(
+                                View.VISIBLE
+                        );
+
+                    } else {
+
+                        emptyMessage.setVisibility(
+                                View.GONE
+                        );
+                    }
+                }
+        );
+
         recyclerView.setAdapter(adapter);
+
         if (pantryItems.isEmpty()) {
-            emptyMessage.setVisibility(View.VISIBLE);
+
+            emptyMessage.setVisibility(
+                    View.VISIBLE
+            );
+
         } else {
-            emptyMessage.setVisibility(View.GONE);
+
+            emptyMessage.setVisibility(
+                    View.GONE
+            );
         }
     }
 }

@@ -12,30 +12,28 @@
         android:textSize="28sp"
         android:textStyle="bold" />
 
-
     <EditText
         android:id="@+id/etIngredientName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ingredient Name"
         android:inputType="text"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp" />
 
-<EditText
-    android:id="@+id/etQuantity"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:hint="Quantity"
-    android:inputType="numberDecimal"
-    android:layout_marginTop="16dp"/>
+    <EditText
+        android:id="@+id/etQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Quantity"
+        android:inputType="numberDecimal"
+        android:layout_marginTop="16dp" />
 
-
-
-<Spinner
-    android:id="@+id/spUnit"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="15dp"/>
+    <Spinner
+        android:id="@+id/spUnit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:spinnerMode="dropdown" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -56,5 +54,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save Ingredient"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp" />
+
 </LinearLayout>
